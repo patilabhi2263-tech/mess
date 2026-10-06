@@ -1,0 +1,94 @@
+:root{
+  --steel:#2f3e46;
+  --steel-soft:#52616b;
+  --paper:#f6f4ee;
+  --card:#ffffff;
+  --turmeric:#e0a100;
+  --leaf:#2e7d4f;
+  --chilli:#c0392b;
+  --line:#d9d5c8;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;background:var(--paper);color:var(--steel);line-height:1.5}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--turmeric);outline-offset:2px}
+
+/* Header */
+.topbar{background:var(--steel);color:#fff;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:6px solid var(--turmeric)}
+.topbar h1{font-size:1.4rem;letter-spacing:.3px}
+.topbar p{font-size:.9rem;color:#cfd8dc}
+.switch{display:flex;background:#1f2a30;border-radius:999px;padding:4px}
+.switch button{border:0;background:transparent;color:#cfd8dc;padding:.55rem 1.2rem;border-radius:999px;font:inherit;cursor:pointer}
+.switch button.active{background:var(--turmeric);color:var(--steel);font-weight:700}
+
+main{max-width:1050px;margin:0 auto;padding:1.5rem}
+.panel{display:none}
+.panel.show{display:block}
+h2{font-size:1.5rem;margin-bottom:.25rem}
+.sub{color:var(--steel-soft);margin-bottom:1.25rem}
+h3{font-size:1.1rem;margin-bottom:.75rem}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem}
+.grid{display:grid;gap:1.25rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+
+/* Menu */
+.meal{border-left:6px solid var(--turmeric)}
+.meal.lunch{border-left-color:var(--leaf)}
+.meal.dinner{border-left-color:var(--chilli)}
+.meal .time{font-size:.85rem;color:var(--steel-soft);margin-bottom:.5rem}
+.meal ul{margin:0 0 1rem 1.1rem}
+.choice{display:flex;gap:.5rem}
+.choice button{flex:1;padding:.5rem;border:1.5px solid var(--line);background:#fff;border-radius:var(--radius);font:inherit;cursor:pointer;color:var(--steel)}
+.choice button.yes.on{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.choice button.no.on{background:var(--chilli);border-color:var(--chilli);color:#fff}
+
+/* Tables */
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{padding:.65rem .75rem;text-align:left;border-bottom:1px solid var(--line)}
+th{background:var(--steel);color:#fff;font-weight:600}
+tr:nth-child(even) td{background:#faf9f5}
+td.today{background:#fff3cc !important;font-weight:700}
+
+/* Forms */
+.form{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+label{display:block;font-size:.9rem;font-weight:600;margin-bottom:.25rem}
+input,select,textarea{width:100%;padding:.55rem .7rem;border:1.5px solid var(--line);border-radius:8px;font:inherit;background:#fff;color:var(--steel)}
+textarea{resize:vertical}
+.btn{background:var(--steel);color:#fff;border:0;border-radius:var(--radius);padding:.7rem 1.4rem;font:inherit;font-weight:700;cursor:pointer;margin-top:1rem}
+.btn:hover{background:var(--leaf)}
+
+/* Worker summary */
+.stats{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:1.25rem}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1rem;border-top:5px solid var(--steel)}
+.stat strong{display:block;font-size:1.7rem}
+.stat span{font-size:.85rem;color:var(--steel-soft)}
+.stat.good{border-top-color:var(--leaf)}
+.stat.warn{border-top-color:var(--turmeric)}
+.stat.bad{border-top-color:var(--chilli)}
+.tip{background:#fff3cc;border:1px solid var(--turmeric);border-radius:var(--radius);padding:.9rem 1rem}
+
+footer{text-align:center;color:var(--steel-soft);font-size:.85rem;padding:2rem 1rem}
+
+@media (max-width:600px){
+  .topbar{justify-content:center;text-align:center}
+}
+@media (prefers-reduced-motion:no-preference){
+  .btn,.choice button,.switch button{transition:background .2s,color .2s}
+}
+
+/* Landing page and roles */
+[hidden]{display:none !important}
+.landing{max-width:760px;margin:0 auto;padding:3rem 1.5rem;text-align:center}
+.landing h1{font-size:2rem;margin-bottom:.25rem}
+.roles{margin-top:1.5rem;text-align:left}
+.role{font:inherit;color:var(--steel);background:var(--card);border:2px solid var(--line);border-radius:var(--radius);padding:1.5rem;cursor:pointer;border-top:8px solid var(--leaf)}
+.role[data-role="worker"]{border-top-color:var(--turmeric)}
+.role:hover{border-color:var(--steel)}
+.role h2{margin-bottom:.4rem}
+.role p{color:var(--steel-soft)}
+.gate{max-width:360px;margin:1.5rem auto 0;text-align:left}
+.gate .btn{width:100%}
+.gate .tip{margin-top:1rem}
+.logout{background:transparent;color:#fff;border:1.5px solid #8fa0a8;border-radius:999px;padding:.5rem 1rem;font:inherit;cursor:pointer}
+.logout:hover{background:#1f2a30}

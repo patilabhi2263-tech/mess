@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mess Food Management and Tracking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ================= FIRST PAGE: CHOOSE ROLE ================= -->
+<section id="landing" class="landing">
+  <h1>Mess Food Management</h1>
+  <p class="sub">Choose how you want to continue</p>
+  <div class="grid roles">
+    <button class="role" data-role="student">
+      <h2>Student</h2>
+      <p>View the menu and tell the mess if you will attend.</p>
+    </button>
+    <button class="role" data-role="worker">
+      <h2>Mess worker</h2>
+      <p>Edit the menu, see attendance and record food data. Needs an access code.</p>
+    </button>
+  </div>
+  <div id="gate" class="card gate" hidden>
+    <label for="code">Mess worker access code</label>
+    <input type="password" id="code" autocomplete="off">
+    <button class="btn" id="gateBtn">Continue</button>
+    <p id="gateMsg" class="tip" hidden></p>
+  </div>
+</section>
+
+<div id="app" hidden>
+<header class="topbar">
+  <div>
+    <h1>Mess Food Management</h1>
+    <p>Plan meals, cut waste, feed everyone well</p>
+  </div>
+  <div class="switch" role="tablist">
+    <button class="active" data-target="student" role="tab">Student</button>
+    <button data-target="worker" role="tab">Mess worker</button>
+  </div>
+  <button class="logout" id="logout">Log out</button>
+</header>
+
+<main>
+
+  <!-- ================= STUDENT SECTION ================= -->
+  <section id="student" class="panel show">
+    <h2 id="todayTitle">Today's menu</h2>
+    <p class="sub">Tell the mess if you will eat, so the right amount is cooked.</p>
+    <div class="grid" id="todayMenu"></div>
+    <p id="studentMsg" class="tip" hidden></p>
+
+    <h2 style="margin-top:1.5rem">Weekly menu</h2>
+    <p class="sub">Plan ahead for the week.</p>
+    <div class="card scroll">
+      <table>
+        <thead><tr><th>Day</th><th>Breakfast</th><th>Lunch</th><th>Dinner</th></tr></thead>
+        <tbody id="weekBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= WORKER SECTION ================= -->
+  <section id="worker" class="panel">
+    <h2>Mess dashboard</h2>
+    <p class="sub">Update the menu, check expected attendance, then record what was cooked and used.</p>
+
+    <div class="card">
+      <h3>Edit menu</h3>
+      <div class="form">
+        <div>
+          <label for="editDay">Day</label>
+          <select id="editDay"></select>
+        </div>
+        <div>
+          <label for="editMeal">Meal</label>
+          <select id="editMeal">
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="dinner">Dinner</option>
+          </select>
+        </div>
+        <div>
+          <label for="editTime">Meal time</label>
+          <input type="text" id="editTime" placeholder="12:30 PM – 2:00 PM">
+        </div>
+        <div>
+          <label for="editDishes">Dishes (one per line)</label>
+          <textarea id="editDishes" rows="4"></textarea>
+        </div>
+      </div>
+      <button class="btn" id="menuBtn">Update menu</button>
+      <p id="menuMsg" class="tip" style="margin-top:1rem" hidden></p>
+    </div>
+
+    <div class="card scroll">
+      <h3>Today's attendance (from student replies)</h3>
+      <table>
+        <thead><tr><th>Meal</th><th>Attending</th><th>Skipping</th><th>Not replied</th></tr></thead>
+        <tbody id="attBody"></tbody>
+      </table>
+    </div>
+
+    <div class="stats">
+      <div class="stat good"><strong id="sAtt">212</strong><span id="sAttLabel">Students attending lunch</span></div>
+      <div class="stat"><strong id="sPrep">0 kg</strong><span>Food prepared</span></div>
+      <div class="stat warn"><strong id="sLeft">0 kg</strong><span>Food remaining</span></div>
+      <div class="stat bad"><strong id="sWaste">0 kg</strong><span>Food wasted</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Plan quantity</h3>
+      <div class="form">
+        <div>
+          <label for="planMeal">Meal</label>
+          <select id="planMeal"><option value="breakfast">Breakfast</option><option value="lunch" selected>Lunch</option><option value="dinner">Dinner</option></select>
+        </div>
+        <div>
+          <label for="attend">Confirmed attendance (from students)</label>
+          <input type="number" id="attend" value="0" readonly>
+        </div>
+        <div>
+          <label for="perHead">Food per student (kg)</label>
+          <input type="number" id="perHead" value="0.45" step="0.05" min="0">
+        </div>
+      </div>
+      <p class="tip" style="margin-top:1rem">Suggested to cook: <strong id="suggest">0 kg</strong> (includes 5% buffer)</p>
+    </div>
+
+    <div class="card">
+      <h3>Record food data</h3>
+      <div class="form">
+        <div><label for="date">Date</label><input type="date" id="date"></div>
+        <div>
+          <label for="meal">Meal</label>
+          <select id="meal"><option>Breakfast</option><option selected>Lunch</option><option>Dinner</option></select>
+        </div>
+        <div><label for="prepared">Food prepared (kg)</label><input type="number" id="prepared" min="0" step="0.1"></div>
+        <div><label for="served">Food served or used (kg)</label><input type="number" id="served" min="0" step="0.1"></div>
+        <div><label for="remaining">Food remaining (kg)</label><input type="number" id="remaining" min="0" step="0.1"></div>
+        <div><label for="wasted">Food wasted (kg)</label><input type="number" id="wasted" min="0" step="0.1"></div>
+      </div>
+      <button class="btn" id="saveBtn">Save record</button>
+    </div>
+
+    <div class="card scroll">
+      <h3>Recent records</h3>
+      <table>
+        <thead><tr><th>Date</th><th>Meal</th><th>Prepared</th><th>Served</th><th>Remaining</th><th>Wasted</th></tr></thead>
+        <tbody id="records">
+          <tr><td>04 Oct</td><td>Dinner</td><td>98 kg</td><td>88 kg</td><td>6 kg</td><td>4 kg</td></tr>
+          <tr><td>05 Oct</td><td>Lunch</td><td>105 kg</td><td>97 kg</td><td>5 kg</td><td>3 kg</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<footer>Mess Food Management and Tracking · College project</footer>
+
+<script>
+  var DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  var MEALS = ['breakfast','lunch','dinner'];
+  var TIMES = {breakfast:'7:30 AM – 9:00 AM', lunch:'12:30 PM – 2:00 PM', dinner:'7:30 PM – 9:00 PM'};
+  var START = {
+    Monday:['Poha, Tea','Chapati, Dal, Rice','Aloo gobi, Chapati'],
+    Tuesday:['Idli, Sambar','Rajma, Rice','Paneer curry, Chapati'],
+    Wednesday:['Paratha, Curd','Chole, Rice','Veg pulao, Raita'],
+    Thursday:['Upma, Tea','Kadhi, Rice','Mix veg, Chapati'],
+    Friday:['Aloo paratha','Dal tadka, Rice','Egg curry, Chapati'],
+    Saturday:['Dosa, Chutney','Veg biryani','Pav bhaji'],
+    Sunday:['Puri bhaji','Special thali','Light khichdi']
+  };
+
+  // menu[day][meal] = { time, dishes[] }
+  var menu = {};
+  DAYS.forEach(function (d) {
+    menu[d] = {};
+    MEALS.forEach(function (m, i) {
+      menu[d][m] = { time: TIMES[m], dishes: START[d][i].split(', ') };
+    });
+  });
+
+  var choices = {};   // attendance per day+meal
+  var today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  // Replies from other students (sample data); this student's replies are added on top
+  var TOTAL = 250;
+  var counts = {
+    breakfast: { yes: 180, no: 32 },
+    lunch:     { yes: 211, no: 21 },
+    dinner:    { yes: 195, no: 37 }
+  };
+  function renderAttendance() {
+    var body = document.getElementById('attBody');
+    body.innerHTML = '';
+    MEALS.forEach(function (m) {
+      var c = counts[m], tr = document.createElement('tr');
+      [cap(m), c.yes, c.no, TOTAL - c.yes - c.no].forEach(function (t) {
+        var td = document.createElement('td'); td.textContent = t; tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  // ---------- Student view ----------
+  function renderToday() {
+    document.getElementById('todayTitle').textContent = today + "'s menu";
+    var box = document.getElementById('todayMenu');
+    box.innerHTML = '';
+    MEALS.forEach(function (m) {
+      var data = menu[today][m], key = today + m, c = choices[key];
+      var card = document.createElement('article');
+      card.className = 'card meal ' + m;
+      card.innerHTML = '<h3>' + cap(m) + '</h3><p class="time"></p><ul></ul>' +
+        '<div class="choice"><button class="yes">I will attend</button><button class="no">Skip</button></div>';
+      card.querySelector('.time').textContent = data.time;
+      data.dishes.forEach(function (d) {
+        var li = document.createElement('li'); li.textContent = d; card.querySelector('ul').appendChild(li);
+      });
+      var yes = card.querySelector('.yes'), no = card.querySelector('.no');
+      if (c === 'yes') yes.classList.add('on');
+      if (c === 'no') no.classList.add('on');
+      yes.addEventListener('click', function () { choose(key, m, 'yes'); });
+      no.addEventListener('click', function () { choose(key, m, 'no'); });
+      box.appendChild(card);
+    });
+  }
+  function choose(key, meal, val) {
+    var prev = choices[key];
+    if (prev) counts[meal][prev]--;
+    counts[meal][val]++;
+    choices[key] = val;
+    renderToday(); renderAttendance(); suggest();
+    var msg = document.getElementById('studentMsg');
+    msg.hidden = false;
+    msg.textContent = 'Saved: you will ' + (val === 'yes' ? 'attend ' : 'skip ') + meal + '.';
+  }
+  function renderWeek() {
+    var body = document.getElementById('weekBody');
+    body.innerHTML = '';
+    DAYS.forEach(function (d) {
+      var tr = document.createElement('tr');
+      var th = document.createElement('td'); th.textContent = d;
+      if (d === today) th.className = 'today';
+      tr.appendChild(th);
+      MEALS.forEach(function (m) {
+        var td = document.createElement('td');
+        td.textContent = menu[d][m].dishes.join(', ');
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  // ---------- Worker: edit menu ----------
+  var editDay = document.getElementById('editDay'), editMeal = document.getElementById('editMeal');
+  DAYS.forEach(function (d) {
+    var o = document.createElement('option'); o.value = d; o.textContent = d; editDay.appendChild(o);
+  });
+  editDay.value = today;
+  function loadEditor() {
+    var data = menu[editDay.value][editMeal.value];
+    document.getElementById('editTime').value = data.time;
+    document.getElementById('editDishes').value = data.dishes.join('\n');
+  }
+  editDay.addEventListener('change', loadEditor);
+  editMeal.addEventListener('change', loadEditor);
+  document.getElementById('menuBtn').addEventListener('click', function () {
+    var dishes = document.getElementById('editDishes').value.split('\n')
+      .map(function (s) { return s.trim(); }).filter(Boolean);
+    var msg = document.getElementById('menuMsg');
+    msg.hidden = false;
+    if (!dishes.length) { msg.textContent = 'Add at least one dish.'; return; }
+    menu[editDay.value][editMeal.value] = {
+      time: document.getElementById('editTime').value.trim() || TIMES[editMeal.value],
+      dishes: dishes
+    };
+    msg.textContent = 'Updated ' + editDay.value + ' ' + editMeal.value + '. Students now see the new menu.';
+    renderToday(); renderWeek();
+  });
+
+  // ---------- Roles and access ----------
+  var WORKER_CODE = 'kiki';   // demo only: replace with a real login
+  var role = null;
+
+  function showPanel(id) {
+    if (id === 'worker' && role !== 'worker') return;   // students cannot open the worker section
+    document.querySelectorAll('.panel').forEach(function (p) { p.classList.toggle('show', p.id === id); });
+    document.querySelectorAll('.switch button').forEach(function (b) { b.classList.toggle('active', b.dataset.target === id); });
+  }
+  function enter(r) {
+    role = r;
+    try { sessionStorage.setItem('messRole', r); } catch (e) {}
+    document.getElementById('landing').hidden = true;
+    document.getElementById('app').hidden = false;
+    document.querySelector('.switch').hidden = (r !== 'worker');   // only workers can switch sections
+    showPanel(r === 'worker' ? 'worker' : 'student');
+  }
+  function leave() {
+    role = null;
+    try { sessionStorage.removeItem('messRole'); } catch (e) {}
+    document.getElementById('app').hidden = true;
+    document.getElementById('gate').hidden = true;
+    document.getElementById('landing').hidden = false;
+  }
+  function tryCode() {
+    var input = document.getElementById('code'), msg = document.getElementById('gateMsg');
+    if (input.value === WORKER_CODE) {
+      input.value = ''; msg.hidden = true;
+      document.getElementById('gate').hidden = true;
+      enter('worker');
+    } else {
+      msg.hidden = false; msg.textContent = 'Wrong access code. Ask the mess manager for the code.';
+    }
+  }
+  document.querySelectorAll('.switch button').forEach(function (b) {
+    b.addEventListener('click', function () { showPanel(b.dataset.target); });
+  });
+  document.querySelectorAll('.role').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.dataset.role === 'student') { enter('student'); return; }
+      document.getElementById('gate').hidden = false;
+      document.getElementById('code').focus();
+    });
+  });
+  document.getElementById('gateBtn').addEventListener('click', tryCode);
+  document.getElementById('code').addEventListener('keydown', function (e) { if (e.key === 'Enter') tryCode(); });
+  document.getElementById('logout').addEventListener('click', leave);
+  function restore() {
+    var r = null;
+    try { r = sessionStorage.getItem('messRole'); } catch (e) {}
+    if (r === 'student' || r === 'worker') enter(r);
+  }
+
+  // ---------- Worker: quantity + records ----------
+  function suggest() {
+    var meal = document.getElementById('planMeal').value;
+    var a = counts[meal].yes;
+    var p = +document.getElementById('perHead').value || 0;
+    document.getElementById('attend').value = a;
+    document.getElementById('suggest').textContent = (a * p * 1.05).toFixed(1) + ' kg';
+    document.getElementById('sAtt').textContent = a;
+    document.getElementById('sAttLabel').textContent = 'Students attending ' + meal;
+  }
+  document.getElementById('planMeal').addEventListener('change', suggest);
+  document.getElementById('perHead').addEventListener('input', suggest);
+  document.getElementById('date').valueAsDate = new Date();
+
+  document.getElementById('saveBtn').addEventListener('click', function () {
+    var v = function (id) { return document.getElementById(id).value; };
+    if (!v('prepared')) { alert('Enter the food prepared.'); return; }
+    var row = document.createElement('tr');
+    [v('date'), v('meal'), v('prepared') + ' kg', (v('served') || 0) + ' kg',
+     (v('remaining') || 0) + ' kg', (v('wasted') || 0) + ' kg'].forEach(function (t) {
+      var td = document.createElement('td'); td.textContent = t; row.appendChild(td);
+    });
+    document.getElementById('records').prepend(row);
+    document.getElementById('sPrep').textContent = v('prepared') + ' kg';
+    document.getElementById('sLeft').textContent = (v('remaining') || 0) + ' kg';
+    document.getElementById('sWaste').textContent = (v('wasted') || 0) + ' kg';
+  });
+
+  suggest(); renderAttendance(); renderToday(); renderWeek(); loadEditor(); restore();
+</script>
+</body>
+</html>
